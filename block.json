@@ -1,0 +1,11 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 2,
+    "name": "alb-theme/type-1-banner-block",
+    "title": "ALB Block Theme Type 1 Banner",
+    "description": "Highly customizable banner block, develeped by Max (DELIHUI) from albedu.org. Works independantly and with ALB Theme button block and text block. ",
+    "keywords": [ "alb block theme", "alb theme banner block", "custom banner", "banner block" ],
+    "version": "1.0.0",
+    "editorScript": "file:./build/index.js",
+    "editorStyle": "file:./build/index.css"
+}

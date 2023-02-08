@@ -1,0 +1,23 @@
+.alb-theme-type-1-banner-block-error {
+	position: relative;
+	height: 400px;
+	background-color: #888;
+}
+
+.alb-theme-type-1-banner-block-error div {
+	position: absolute;
+	transform: translateY(-50%);
+	width: 100%;
+	left: 0;
+	top: 50%;
+	font-size: 3rem;
+	font-family: 'Roboto', sans-serif;
+	font-weight: 300;
+	color: #FFF;
+	text-align: center;
+}
+
+/*.editor-styles-wrapper .wp-site-blocks .wp-block-alb-theme-type-1-banner-block, .editor-styles-wrapper > .is-root-container .wp-block-alb-theme-type-1-banner-block, .editor-styles-wrapper .edit-post-visual-editor__post-title-wrapper .wp-block-alb-theme-type-1-banner-block, .editor-styles-wrapper .wp-block-group.alignfull .wp-block-alb-theme-type-1-banner-block, .editor-styles-wrapper .wp-block-group.has-background .wp-block-alb-theme-type-1-banner-block, .editor-styles-wrapper .wp-block-cover.alignfull .wp-block-alb-theme-type-1-banner-block, .editor-styles-wrapper .is-root-container .wp-block[data-align="full"] > .wp-block-group .wp-block-alb-theme-type-1-banner-block, .editor-styles-wrapper .is-root-container .wp-block[data-align="full"] > .wp-block-cover {
+	margin-left:  calc( -1 * var(--wp--custom--spacing--outer) );
+	margin-right: calc( -1 * var(--wp--custom--spacing--outer) );
+}*/
