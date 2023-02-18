@@ -1,14 +1,14 @@
-=== Plugin Name ===
+=== ALB Block Theme Type 1 Banner ===
 Contributors: albedu
-Tags: 1.0
+Tags: 1.0.0
 Requires at least: 6.0
 Tested up to: 6.1
-Stable tag: 1.0
+Stable tag: 1.0.0
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-This block is a custom banner image of full width on your sites or/and blog posts. On top of the banner image, you may add various other child-blocks.
+Custom responsive banner image of full width on sites, templates or/and blog posts. On top of the image, you may add various other child-blocks.
 
 == Description ==
 
@@ -26,14 +26,15 @@ Please be reminded to test your websites for different screen widths ranging fro
 
 
 
+== Frequently Asked Questions ==
 
-= Tips for users of themes *twentytwentytwo* =
+= Tips for users of the theme twentytwentytwo =
 
 * If you insert this block after another block, you might find a top margin above it. 
 * You may remove / add this top margin with a toggle button provided at the toolbar. (Please see the screenshot. )
 * You may put this banner block inside the *Group* block, which is one of WordPress core block, to make it take up the full-width of the web page / blog post. 
 
-= Tips for users of the theme *twentytwentythree* =
+= Tips for users of the theme twentytwentythree =
 
 * If you are using the WorePress *twentytwentythree*, you might see a top padding on the entire page. To remove that top padding you can do it either at global scope, or at block post (or template) scope. 
 * To remove / add the top padding from / to every page and blog posts, you need to click the *Styles* button, then click the *Layout* button, and adjust the top padding. If you cannot see the textbox to input the top padding value, please simply click the toggle button. Please know that this is one of the WordPress core features, not specific to *ALB Block Theme Type 1 Banner*. (Please see the screenshot. )

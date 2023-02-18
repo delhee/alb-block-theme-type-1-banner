@@ -2,8 +2,8 @@
 
 /*
 	Plugin Name: ALB Block Theme Type 1 Banner
-	Description: ALB Block Theme Type 1 Banner is a WordPress block type plug-in that is highly customizable and used for both site editing and blog post editing. This block enables users to display a banner image of full width on their WordPress sites and blog posts. On top of the banner image, users may add other child-blocks, such as ALB Theme Text Blocks, WordPress core paragraph, buttons, and even post titles, which is dynamically pulled in from database. Users are also provided a way to adjust the position of those child-blocks. 
-	Version: 1.0
+	Description: Custom responsive banner image of full width on sites, templates or/and blog posts. On top of the image, you may add various other child-blocks.
+	Version: 1.0.0
 	Author: DELIHUI (Max), ALB Education
 	Author URI: https://albedu.org
 	Text Domain: alb-theme-type-1-banner-block-text-domain
