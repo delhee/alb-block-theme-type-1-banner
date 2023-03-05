@@ -1,7 +1,7 @@
 import "./admin.scss"
 import "./front-end.scss"
 import { getStyleSheetObject } from "./front-end-utils.js"
-import { ImageUploadUtilities, ColorUtilities, SizeUtilities, PreviewWindowSizeMonitor, loadAdditionalCSSIntoPreviewWindow, getLabelJSXElement } from "./utils"
+import { ImageUploadUtilities, ColorUtilities, SizeUtilities, PreviewWindowSizeMonitor, loadAdditionalCSSIntoPreviewWindow, getLabelJSXElement, getPreviewWindow, cssLengthToPx } from "./utils"
 import { ScreenWidthRef, BannerImageTypeArray, AlignmentType, BannerBottomBorderStyleArray, WPDOMSelectors, WordPressDefaultThemeArray } from "./constants"
 import apiFetch from "@wordpress/api-fetch"
 import { ToolbarGroup, ToolbarButton, Button, Icon, PanelBody, PanelRow, ColorPicker } from "@wordpress/components"
@@ -231,6 +231,8 @@ function EditComponent (props) {
 	const [allowedBlockArray, setAllowedBlockArray] = useState( ["core/paragraph", "core/buttons", "alb-theme/text-content-block", "alb-theme/button-block", "alb-theme/button-wrapper-block"] );
 	
 	const [screenWidthType, setScreenWidthType]                                         = useState( "" );
+	const [previewScreenWidth, setPreviewScreenWidth]                                   = useState( "" );
+	const [previewScreenHeight, setreviewScreenHeight]                                  = useState( "" );
 	const [textContentTopPostion, setTextContentTopPostion]                             = useState( "50%" );
 	const [textContentTranslateYForMobile, setTextContentTranslateYForMobile]           = useState( "50%" );
 	const [textContentTranslateYForTablet, setTextContentTranslateYForTablet]           = useState( "50%" );
@@ -391,7 +393,7 @@ function EditComponent (props) {
 		);
 	}
 	
-	function ImageUploadButtons() {getLabelJSXElement
+	function ImageUploadButtons() {
 		const imageUploadButtonLabelForMobile = getLabelJSXElement(__("Upload Image (for ${BOLDBEGIN}Mobile${BOLDEND})", "alb-theme-type-1-banner-block-text-domain"));
 		const imageUploadButtonLabelForTablet = getLabelJSXElement(__("Upload Image (for ${BOLDBEGIN}Tablet${BOLDEND})", "alb-theme-type-1-banner-block-text-domain"));
 		const imageUploadButtonLabelForDesktop = getLabelJSXElement(__("Upload Image (for ${BOLDBEGIN}Desktop${BOLDEND})", "alb-theme-type-1-banner-block-text-domain"));
@@ -574,6 +576,8 @@ function EditComponent (props) {
 					/>
 					);
 				default: 
+					//console.warn(getLogHeader() + "ImageUploadButtons, unknown screenWidthType: ", screenWidthType);
+					
 					return (
 					<>
 						<ImageUploadUtilities
@@ -949,6 +953,8 @@ function EditComponent (props) {
 					</>
 					);
 				default: 
+					//console.warn(getLogHeader() + "BannerBottomBorderWidthControl, unknown screenWidthType: ", screenWidthType);
+					
 					return (
 					<>
 					<PanelRow className="display--block">
@@ -1448,6 +1454,8 @@ function EditComponent (props) {
 					</>
 					);
 				default: 
+					//console.warn(getLogHeader() + "BannerImagePositionControl, unknown screenWidthType: ", screenWidthType);
+					
 					return (
 					<>
 					<PanelRow className="display--block">
@@ -1974,6 +1982,8 @@ function EditComponent (props) {
 					</>
 					);
 				default: 
+					//console.warn(getLogHeader() + "BannerTextContentPositionControl, unknown screenWidthType: ", screenWidthType);
+					
 					return (
 					<>
 					<PanelRow className="display--block">
@@ -2340,6 +2350,8 @@ function EditComponent (props) {
 					</>
 					);
 				default: 
+					//console.warn(getLogHeader() + "BannerHeightControl, unknown screenWidthType: ", screenWidthType);
+					
 					return (
 					<>
 					<PanelRow className="display--block">
@@ -2433,22 +2445,65 @@ function EditComponent (props) {
 		return item["code"] == props.attributes.textContentHorizontalAlignment;
 	})[0]["slug"];
 	
+	function getCurrentBannerImageAspectRatio() {
+		let currentBannerImageAspectRatio = 0;
+		
+		if ( props.attributes.bannerImageType == "CI" ) {
+			currentBannerImageAspectRatio = parseFloat( previewScreenWidth ) / parseFloat( previewScreenHeight );
+		} else if ( props.attributes.bannerImageType == "FH" ) {
+			let computedBannerHeight = 0;
+			
+			switch (screenWidthType) {
+				case SCREEN_WIDTH_TYPE_MOBILE:
+					computedBannerHeight = cssLengthToPx(props.attributes.mobileBannerHeight);
+					break;
+				case SCREEN_WIDTH_TYPE_TABLET:
+					computedBannerHeight = cssLengthToPx(props.attributes.tabletBannerHeight);
+					break;
+				case SCREEN_WIDTH_TYPE_DESKTOP:
+					computedBannerHeight = cssLengthToPx(props.attributes.desktopBannerHeight);
+					break;
+				case SCREEN_WIDTH_TYPE_WIDE_DESKTOP:
+					computedBannerHeight = cssLengthToPx(props.attributes.wideDesktopBannerHeight);
+					break;
+				default:
+					//console.warn(getLogHeader() + "getCurrentBannerImageAspectRatio() implementation, unknown screenWidthType: ", screenWidthType);
+					
+					break;
+			}
+			
+			if ( computedBannerHeight > 0 ) {
+				currentBannerImageAspectRatio = parseFloat( previewScreenWidth ) / parseFloat( computedBannerHeight );
+			} else {
+				console.warn(getLogHeader() + "getCurrentBannerImageAspectRatio() implementation, error. computedBannerHeight: ", computedBannerHeight);
+				
+				currentBannerImageAspectRatio = 0;
+			}
+		} else {
+			console.warn(getLogHeader() + "getCurrentBannerImageAspectRatio() implementation, error. props.attributes.bannerImageType: ", props.attributes.bannerImageType);
+			
+			currentBannerImageAspectRatio = 0;
+		}
+		
+		return currentBannerImageAspectRatio;
+	}
+	
 	function PreviewBlock() {
 		if (props.attributes.bannerImageType == "CI" || props.attributes.bannerImageType == "FH") {
-			var firefoxVersionInfoIndex = navigator.userAgent.toLowerCase().indexOf('firefox');
+			let firefoxVersionInfoIndex = navigator.userAgent.toLowerCase().indexOf('firefox');
 			
-			var bannerImageInlineStyleObject = {};
+			let bannerImageInlineStyleObject = {};
 			
-			if ( firefoxVersionInfoIndex > 0 ) {
-				var firefoxVersionNumber = parseFloat(navigator.userAgent.substring(firefoxVersionInfoIndex + 8));
-				
-				var bannerImageMaxWidth = "none";
-				
-				if ( firefoxVersionNumber < 80 ) {
-					bannerImageMaxWidth = "100%";
-				}
-				
-				bannerImageInlineStyleObject["maxWidth"] = bannerImageMaxWidth;
+			let currentBannerImageAspectRatio = getCurrentBannerImageAspectRatio();
+			
+			if ( props.attributes.isInTestMode ) {
+				console.log( getLogHeader() + "PreviewBlock, currentBannerImageAspectRatio: ", currentBannerImageAspectRatio );
+			}
+			
+			if ( currentBannerImageAspectRatio > 3 ) {
+				bannerImageInlineStyleObject["maxWidth"] = "100%";
+			} else {
+				bannerImageInlineStyleObject["maxWidth"] = "none";
 			}
 			
 			return (
@@ -2727,12 +2782,15 @@ function EditComponent (props) {
 						console.log(getLogHeader() + "PreviewWindowSizeMonitor onUpdate previewScreenParameters[\"screenWidthType\"]: ", previewScreenParameters["screenWidthType"]);
 					}
 					
+					setPreviewScreenWidth( previewScreenParameters["width"] );
+					setreviewScreenHeight( previewScreenParameters["height"] );
 					setScreenWidthType(previewScreenParameters["screenWidthType"]);
 				}} 
 				miscInfo={{
 					blockName: BLOCK_NAME, 
 					isInTestMode: props.attributes.isInTestMode
-			}}/>
+				}}
+			/>
 			
 			<BlockControls>
 				{isWordPressTheme && ( <ToolbarGroup>
