@@ -3,7 +3,7 @@
 /*
 	Plugin Name: ALB Block Theme Type 1 Banner
 	Description: Custom responsive banner image of full width on sites, templates or/and blog posts. On top of the image, you may add various other child-blocks.
-	Version: 1.0.0
+	Version: 1.0.1
 	Author: DELIHUI (Max), ALB Education
 	Author URI: https://albedu.org
 	Text Domain: alb-theme-type-1-banner-block-text-domain

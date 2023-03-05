@@ -1,9 +1,9 @@
 === ALB Block Theme Type 1 Banner ===
 Contributors: albedu
-Tags: 1.0.0
+Tags: 1.0.0, 1.0.1
 Requires at least: 6.0
 Tested up to: 6.1
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -58,5 +58,10 @@ We post [video tutorials](https://www.youtube.com/channel/UCZTDSUa3ESwd1c6OyWU5H
 
 == Changelog ==
 
-= 1.0 =
+= 1.0.0 =
 * Initial commit
+
+= 1.0.1 =
+* Added missing translations
+* Added support for more child blocks 
+* Bug fix
