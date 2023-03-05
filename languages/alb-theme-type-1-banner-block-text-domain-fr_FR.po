@@ -3,9 +3,9 @@ msgstr ""
 "Project-Id-Version: ALB Block Theme Type 1 Banner\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-11-02 10:13+0000\n"
-"PO-Revision-Date: 2023-02-01 07:28+0000\n"
+"PO-Revision-Date: 2023-03-01 05:52+0000\n"
 "Last-Translator: \n"
-"Language-Team: French (France)\n"
+"Language-Team: Français\n"
 "Language: fr_FR\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +22,7 @@ msgstr "Hauteur de la bannière pour les ${BOLDBEGIN}ordinateurs${BOLDEND}:"
 
 #: build/index.js:4119 src/index.js:2150
 msgid "${BOLDBEGIN}Mobile${BOLDEND} Banner Height:"
-msgstr "${BOLDBEGIN}téléphones${BOLDEND}:"
+msgstr "Hauteur de la bannière pour les ${BOLDBEGIN}téléphones${BOLDEND}:"
 
 #: build/index.js:4120 src/index.js:2151
 msgid "${BOLDBEGIN}Tablet${BOLDEND} Banner Height:"
