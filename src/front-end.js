@@ -44,19 +44,54 @@ window.extraBlockDataArray.map( extraBlockData => {
 
 
 
-var firefoxVersionInfoIndex = navigator.userAgent.toLowerCase().indexOf('firefox');
+//var firefoxVersionInfoIndex = navigator.userAgent.toLowerCase().indexOf('firefox');
+//
+//if ( firefoxVersionInfoIndex > 0 ) {
+//	var firefoxVersionNumber = parseFloat(navigator.userAgent.substring(firefoxVersionInfoIndex + 8));
+//	
+//	var bannerImageMaxWidth = "none";
+//	
+//	//The purpose of the following code is to display banner image nicely in "Fixed Height" mode mode on older Firefox browser
+//	if ( firefoxVersionNumber < 80 && parseInt(window.innerWidth) >= 990 ) {
+//		bannerImageMaxWidth = "100%";
+//	}
+//	
+//	document.querySelectorAll(".alb-theme-type-1-banner__image").forEach( bannerImageDOMElement => {
+//		bannerImageDOMElement.style.maxWidth = bannerImageMaxWidth;
+//	});
+//}
 
-if ( firefoxVersionInfoIndex > 0 ) {
-	var firefoxVersionNumber = parseFloat(navigator.userAgent.substring(firefoxVersionInfoIndex + 8));
-	
-	var bannerImageMaxWidth = "none";
-	
-	//The purpose of the following code is to display banner image nicely in "Fixed Height" mode mode on older Firefox browser
-	if ( firefoxVersionNumber < 80 && parseInt(window.innerWidth) >= 990 ) {
-		bannerImageMaxWidth = "100%";
-	}
-	
-	document.querySelectorAll(".alb-theme-type-1-banner__image").forEach( bannerImageDOMElement => {
-		bannerImageDOMElement.style.maxWidth = bannerImageMaxWidth;
+
+
+
+
+//The purpose of the following code is to display banner image nicely in "Fixed Height" mode mode on older Firefox browser
+function adjustBannerImageMaxWidth() {
+	document.querySelectorAll(".alb-theme-type-1-banner").forEach( bannerDOMElement => {
+		if (bannerDOMElement) {
+			let computedBannerHeight = bannerDOMElement.style.height;
+			let computedBannerWidth = bannerDOMElement.style.width;
+			
+			if ( window.getComputedStyle ) {
+				computedBannerHeight = getComputedStyle(bannerDOMElement).getPropertyValue('height');
+				computedBannerWidth = getComputedStyle(bannerDOMElement).getPropertyValue('width');
+			}
+			
+			let aspectRatio = parseFloat(computedBannerWidth) / parseFloat(computedBannerHeight);
+			let bannerImageDOMElement = bannerDOMElement.querySelector(".alb-theme-type-1-banner__image");
+			
+			if ( aspectRatio > 3 ) {
+				bannerImageDOMElement.style.maxWidth = "100%";
+			} else {
+				bannerImageDOMElement.style.maxWidth = "none";
+			}
+		}
 	});
 }
+
+
+window.addEventListener("resize", function(e) {
+	adjustBannerImageMaxWidth();
+});
+
+adjustBannerImageMaxWidth();
