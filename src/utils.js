@@ -362,6 +362,36 @@ function getScreenTypeByWidth(width) {
 	}
 }
 
+function getCurrentPostType() {
+	let currentPostType = wp.data.select("core/editor").getCurrentPostType();
+	
+	if ( !currentPostType ) {
+		currentPostType = wp.data.select("core/edit-site").getEditedPostType();
+	}
+	
+	return currentPostType;
+}
+
+function _getPreviewWindow(currentPostType) {
+	let previewWindow = undefined;
+	
+	if ( currentPostType == POST_TYPE_WP_TEMPLATE ) {
+		let previewScreenFrame = document.querySelector(WPDOMSelectors["PREVIEW_WINDOW_IFRAME_ON_EDITOR_PAGE"]);
+		
+		if ( previewScreenFrame ) {
+			previewWindow = previewScreenFrame.contentWindow;
+		}
+	} else {
+		previewWindow = window;
+	}
+	
+	return previewWindow;
+}
+
+export function getPreviewWindow() {
+	return _getPreviewWindow(getCurrentPostType());
+}
+
 function getPreviewScreenParameters(currentPostType, currentPreviewDeviceType) {
 	let previewScreenParameters = {};
 	
@@ -374,17 +404,7 @@ function getPreviewScreenParameters(currentPostType, currentPreviewDeviceType) {
 			previewScreenParameters["height"] = parseFloat("1024px");
 			previewScreenParameters["screenWidthType"] = SCREEN_WIDTH_TYPE_TABLET;
 		} else if ( currentPreviewDeviceType == PREVIEW_MODE_DESKTOP ) {
-			let previewWindow = undefined;
-			
-			if ( currentPostType == POST_TYPE_WP_TEMPLATE ) {
-				let previewScreenFrame = document.querySelector(WPDOMSelectors["PREVIEW_WINDOW_IFRAME_ON_EDITOR_PAGE"]);
-				
-				if ( previewScreenFrame ) {
-					previewWindow = previewScreenFrame.contentWindow;
-				}
-			} else {
-				previewWindow = window;
-			}
+			let previewWindow = _getPreviewWindow(currentPostType);
 			
 			if ( previewWindow ) {
 				let previewScreenWidth = parseFloat(previewWindow.innerWidth);
@@ -402,83 +422,134 @@ function getPreviewScreenParameters(currentPostType, currentPreviewDeviceType) {
 }
 
 export function PreviewWindowSizeMonitor(props) {
-	const logHeader = Date().toLocaleString() + " " + "@" + props.miscInfo.blockName + ", @PreviewWindowSizeMonitor implementation, ";
+	const logHeader = function() {
+		return Date().toLocaleString() + " " + "@" + props.miscInfo.blockName + ", @PreviewWindowSizeMonitor implementation, ";
+	}
 	
+	const [currentPostType, setCurrentPostType] = useState( "" );
 	const [currentPreviewDeviceType, setCurrentPreviewDeviceType] = useState( "" );
+	const [currentPreviewScreenWidth, setCurrentPreviewScreenWidth] = useState( 0 );
 			
 	useEffect(function() {
 		if (props.miscInfo.isInTestMode) {
-			console.log(logHeader + "useEffect(..., [currentPreviewDeviceType, ...]) fired");
+			console.log(logHeader() + "useEffect(..., [currentPreviewDeviceType, ...]) fired");
 		}
 		
-		let currentPostType = wp.data.select("core/editor").getCurrentPostType();
+		let currentPostType = getCurrentPostType();
 		
-		if ( !currentPostType ) {
-			currentPostType = wp.data.select("core/edit-site").getEditedPostType();
+		if (props.miscInfo.isInTestMode) {
+			console.log(logHeader() + "currentPostType: ", currentPostType);
 		}
 		
 		const debounceOnWindowResize = debounce ( e => {
 			if (props.miscInfo.isInTestMode) {
-				console.log(logHeader + "debounceOnWindowResize fired");
+				console.log(logHeader() + "debounceOnWindowResize fired");
 			}
 			
 			props.onUpdate(getPreviewScreenParameters(currentPostType, currentPreviewDeviceType));
 		}, 333);
 		
-		if ( currentPreviewDeviceType == PREVIEW_MODE_DESKTOP ) {
-			if (props.miscInfo.isInTestMode) {
-				console.log(logHeader + "window.addEventListener(\"resize\", ...) ready");
-			}
-			
-			window.addEventListener("resize", debounceOnWindowResize);//, true);
+		if ( currentPostType ) {
+			setCurrentPreviewDeviceType(getPreviewDeviceType(currentPostType));
 			
 			if (props.miscInfo.isInTestMode) {
-				console.log(logHeader + "window.addEventListener(\"resize\", ...) done");
+				console.log(logHeader() + "currentPreviewDeviceType: ", currentPreviewDeviceType);
 			}
+				
+			if ( currentPreviewDeviceType == PREVIEW_MODE_DESKTOP ) { 
+				let currentPreviewScreenParameters = getPreviewScreenParameters(currentPostType, currentPreviewDeviceType);
+				
+				if (props.miscInfo.isInTestMode) {
+					console.log(logHeader() + "currentPreviewScreenParameters: ", currentPreviewScreenParameters);
+					console.log(logHeader() + "currentPreviewScreenParameters[\"width\"]: ", currentPreviewScreenParameters["width"]);
+				}
+				
+				setCurrentPreviewScreenWidth( parseFloat( currentPreviewScreenParameters["width"] ) );
+				
+				if (props.miscInfo.isInTestMode) {
+					console.log(logHeader() + "window.addEventListener(\"resize\", ...) ready");
+				}
+				
+				window.addEventListener("resize", debounceOnWindowResize);//, true);
+				
+				if (props.miscInfo.isInTestMode) {
+					console.log(logHeader() + "window.addEventListener(\"resize\", ...) done");
+				}
+			}
+		} else {
+			console.warn(logHeader() + "Unable to get newPreviewDeviceType. ");
 		}
 		
 		const functionUnsubscribeWPData = wp.data.subscribe(() => {
+			//console.log("wp.data.subscribe, isInTestMode: ", props.miscInfo.isInTestMode);
 			
 			let newPreviewDeviceType = getPreviewDeviceType(currentPostType);
+			
+			if (props.miscInfo.isInTestMode) {
+				console.log(logHeader() + "wp.data.subscribe, currentPreviewDeviceType: ", currentPreviewDeviceType);
+				console.log(logHeader() + "wp.data.subscribe, newPreviewDeviceType: ", newPreviewDeviceType);
+			}
 			
 			if ( newPreviewDeviceType ) {
 				if ( currentPreviewDeviceType == PREVIEW_MODE_DESKTOP ) {
 					if ( newPreviewDeviceType == PREVIEW_DEVICE_MOBILE || newPreviewDeviceType == PREVIEW_DEVICE_TABLET ) {
-						//console.log(logHeader + "currentPreviewDeviceType: ", currentPreviewDeviceType);
-						//console.log(logHeader + "newPreviewDeviceType: ", newPreviewDeviceType);
+						//console.log(logHeader() + "wp.data.subscribe, currentPreviewDeviceType: ", currentPreviewDeviceType);
+						//console.log(logHeader() + "wp.data.subscribe, newPreviewDeviceType: ", newPreviewDeviceType);
 						
 						setCurrentPreviewDeviceType(newPreviewDeviceType);
+					} else if ( newPreviewDeviceType == PREVIEW_MODE_DESKTOP ) {
+						if (props.miscInfo.isInTestMode) {
+							console.log(logHeader() + "wp.data.subscribe, currentPostType: ", currentPostType);
+							console.log(logHeader() + "wp.data.subscribe, newPreviewDeviceType: ", newPreviewDeviceType);
+						}
+						
+						let newPreviewScreenParameters = getPreviewScreenParameters(currentPostType, newPreviewDeviceType);
+						
+						if (props.miscInfo.isInTestMode) {
+							console.log(logHeader() + "wp.data.subscribe, newPreviewScreenParameters: ", newPreviewScreenParameters);
+							console.log(logHeader() + "wp.data.subscribe, newPreviewScreenParameters[\"width\"]: ", newPreviewScreenParameters["width"]);
+							console.log(logHeader() + "wp.data.subscribe, currentPreviewScreenWidth: ", currentPreviewScreenWidth);
+						}
+						
+						if ( newPreviewScreenParameters["width"] != currentPreviewScreenWidth ) {
+							setCurrentPreviewScreenWidth( parseFloat( newPreviewScreenParameters["width"] ) );
+							
+							if (props.miscInfo.isInTestMode) {
+								console.log(logHeader() + "wp.data.subscribe, ready to execute onUpdate");
+							}
+							
+							props.onUpdate(newPreviewScreenParameters);
+						}
 					}
-				//} else if ( currentPreviewDeviceType == PREVIEW_DEVICE_MOBILE || currentPreviewDeviceType == PREVIEW_DEVICE_TABLET ) {
 				} else {
-					if ( newPreviewDeviceType == PREVIEW_MODE_DESKTOP ) {
-						//console.log(logHeader + "currentPreviewDeviceType: ", currentPreviewDeviceType);
-						//console.log(logHeader + "newPreviewDeviceType: ", newPreviewDeviceType);
-						
-						setCurrentPreviewDeviceType(newPreviewDeviceType);
-					} else if ( newPreviewDeviceType != currentPreviewDeviceType ) {
-						//console.log(logHeader + "currentPreviewDeviceType: ", currentPreviewDeviceType);
-						//console.log(logHeader + "newPreviewDeviceType: ", newPreviewDeviceType);
-						
+					if ( newPreviewDeviceType != currentPreviewDeviceType ) {
 						setCurrentPreviewDeviceType(newPreviewDeviceType);
 					}
 				}
 			} else {
-				console.warn(logHeader + "Unable to get newPreviewDeviceType. ");
+				console.warn(logHeader() + "wp.data.subscribe, Unable to get newPreviewDeviceType. ");
 			}
 		});
 		
-		props.onUpdate(getPreviewScreenParameters(currentPostType, currentPreviewDeviceType));
+		//if ( currentPostType && currentPreviewDeviceType && currentPreviewScreenWidth > 0 ) {
+			if (props.miscInfo.isInTestMode) {
+				console.log(logHeader() + "useEffect(..., [currentPreviewDeviceType, ...]), ready to execute onUpdate");
+			}
+			
+			props.onUpdate(getPreviewScreenParameters(currentPostType, currentPreviewDeviceType));
+		//} else {
+		//	console.warn(logHeader() + "useEffect(..., [currentPreviewDeviceType, ...]), unable to execute onUpdate(), currentPostType: ", currentPostType, "currentPreviewDeviceType: ", currentPreviewDeviceType, "currentPreviewScreenWidth: ", currentPreviewScreenWidth);
+		//}
 		
 		return () => {
 			if (props.miscInfo.isInTestMode) {
-				console.log(logHeader + "useEffect(..., [currentPreviewDeviceType, ...]) returned");
-				console.log(logHeader + "currentPreviewDeviceType: ", currentPreviewDeviceType);
+				console.log(logHeader() + "useEffect(..., [currentPreviewDeviceType, ...]) returned");
+				console.log(logHeader() + "return, currentPreviewDeviceType: ", currentPreviewDeviceType);
 			}
 			
 			if ( currentPreviewDeviceType == PREVIEW_MODE_DESKTOP ) {
 				if (props.miscInfo.isInTestMode) {
-					console.log(logHeader + "window.removeEventListener(\"resize\", ...) ready");
+					console.log(logHeader() + "window.removeEventListener(\"resize\", ...) ready");
 				}
 				
 				if ( debounce.cancel ) {
@@ -491,13 +562,13 @@ export function PreviewWindowSizeMonitor(props) {
 				window.removeEventListener("resize", debounceOnWindowResize);//, true);
 				
 				if (props.miscInfo.isInTestMode) {
-					console.log(logHeader + "window.removeEventListener(\"resize\", ...) done");
+					console.log(logHeader() + "window.removeEventListener(\"resize\", ...) done");
 				}
 			}
 			
 			functionUnsubscribeWPData();
 		}
-	}, [currentPreviewDeviceType, props.miscInfo.isInTestMode, ]);
+	}, [currentPreviewDeviceType, currentPreviewScreenWidth, props.miscInfo.isInTestMode]);
 	
 	
 	
@@ -746,4 +817,31 @@ export function getLabelJSXElement(labelText) {
 		
 	return <p className="alb-theme-block-label-wrapper" dangerouslySetInnerHTML={{__html: labelText}} />;
 }
+
+export function cssLengthToPx(cssLength) {
+	//https://github.com/futurist/unit-to-px/blob/master/dist/index.umd.js
+	let pxValue = 0;
+	
+    let con = document.createElement('div');
+    con.style.position = 'absolute';
+    con.style.width = 0;
+    con.style.height = 0;
+    con.style.visibility = 'hidden';
+    con.style.overflow = 'hidden';
+
+    let el = document.createElement('div');
+
+    con.appendChild(el);
+	
+	el.style.width = cssLength;
+	
+	document.body.appendChild(con);
+	
+    pxValue = el.getBoundingClientRect().width;
+	
+    con.parentNode.removeChild(con);
+	
+	return pxValue;
+}
+
 //export default ColorUtilities;
