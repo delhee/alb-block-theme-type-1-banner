@@ -220,15 +220,15 @@ function getJSXStyleElement(props, miscParams) {
 }
 
 function EditComponent (props) {
-	loadAdditionalCSSIntoPreviewWindow("ADMIN_COMMON_CSS");
-	loadAdditionalCSSIntoPreviewWindow("ALB_THEME_UTILS");
-	loadAdditionalCSSIntoPreviewWindow("NORMALIZE");
+	//loadAdditionalCSSIntoPreviewWindow("ADMIN_COMMON_CSS");
+	//loadAdditionalCSSIntoPreviewWindow("ALB_THEME_UTILS");
+	//loadAdditionalCSSIntoPreviewWindow("NORMALIZE");
 	//loadAdditionalCSSIntoPreviewWindow("FONT_ROBOTO_CSS");
 	
 	//const [previewWindowWidth, setPreviewWindowWidth] = useState( "" );
 	const blockProps = useBlockProps();
 	
-	const [allowedBlockArray, setAllowedBlockArray] = useState( ["core/paragraph", "core/buttons", "alb-theme/text-content-block", "alb-theme/button-block", "alb-theme/button-wrapper-block"] );
+	const [allowedBlockArray, setAllowedBlockArray] = useState( ["core/paragraph", "core/buttons", "alb-theme/text-content-block", "alb-theme/type-1-text-content-block", "alb-theme/type-2-text-content-block", "alb-theme/type-3-text-content-block", "alb-theme/button-block", "alb-theme/type-1-button-block", "type-2-alb-theme/button-block", "type-3-alb-theme/button-block", "alb-theme/button-wrapper-block"] );
 	
 	const [screenWidthType, setScreenWidthType]                                         = useState( "" );
 	const [previewScreenWidth, setPreviewScreenWidth]                                   = useState( "" );
@@ -248,6 +248,10 @@ function EditComponent (props) {
 		if (props.attributes.isInTestMode) {
 			console.log(getLogHeader() + "useEffect fired[]");
 		}
+		
+		loadAdditionalCSSIntoPreviewWindow("ADMIN_COMMON_CSS");
+		loadAdditionalCSSIntoPreviewWindow("ALB_THEME_UTILS");
+		loadAdditionalCSSIntoPreviewWindow("NORMALIZE");
 		
 		if (!props.attributes.instanceId) {
 			props.setAttributes( { instanceId: "alb-theme-type-1-banner-" + Date.now() } );

@@ -336,7 +336,7 @@ function getPreviewDeviceType(currentPostType) {
 	//console.log("currentPostType: ", currentPostType);
 	
 	if ( currentPostType == POST_TYPE_WP_TEMPLATE ) {
-		if ( wp.data.select("core/edit-post").__experimentalGetPreviewDeviceType ) {
+		if ( wp.data.select("core/edit-site").__experimentalGetPreviewDeviceType ) {
 			previewDeviceType = wp.data.select("core/edit-site").__experimentalGetPreviewDeviceType();
 		}
 	} else {

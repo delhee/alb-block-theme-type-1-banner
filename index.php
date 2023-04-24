@@ -2,8 +2,8 @@
 
 /*
 	Plugin Name: ALB Block Theme Type 1 Banner
-	Description: ALB Block Theme Type 1 Banner is a WordPress block type plug-in that is highly customizable and used for both site editing and blog post editing. This block enables users to display a banner image of full width on their WordPress sites and blog posts. On top of the banner image, users may add other child-blocks, such as ALB Theme Text Blocks, WordPress core paragraph, buttons, and even post titles, which is dynamically pulled in from database. Users are also provided a way to adjust the position of those child-blocks. 
-	Version: 1.0
+	Description: Custom responsive banner image of full width on sites, templates or/and blog posts. On top of the image, you may add various other child-blocks.
+	Version: 1.0.2
 	Author: DELIHUI (Max), ALB Education
 	Author URI: https://albedu.org
 	Text Domain: alb-theme-type-1-banner-block-text-domain
@@ -29,11 +29,11 @@ class ALBThemeType1BannerBlock {
 		//var_dump(ALBThemeType1BannerBlock::EDITOR_SCRIPT_NAME);exit;
 		load_plugin_textdomain(ALBThemeType1BannerBlock::TEXT_DOMAIN, false, dirname(plugin_basename(__FILE__)) . '/languages');
 	
-		add_image_size('wideDesktopType1BannerLowDPI', 1920, 654, false );
-		//add_image_size('wideDesktopType1BannerLowDPI2', 1920, 654, true );
-		add_image_size('desktopType1BannerLowDPI', 1380, 654, false );
-		add_image_size('tabletType1BannerLowDPI', 990, 654, false );
-		add_image_size('mobileType1BannerLowDPI', 640, 654, false );
+		add_image_size( 'wideDesktopType1BannerLowDPI', 1920, 654, false );
+		//add_image_size( 'wideDesktopType1BannerLowDPI2', 1920, 654, true );
+		add_image_size( 'desktopType1BannerLowDPI', 1380, 654, false );
+		add_image_size( 'tabletType1BannerLowDPI', 990, 654, false );
+		add_image_size( 'mobileType1BannerLowDPI', 640, 654, false );
 		
 		wp_register_style('alb-theme-type-1-banner-block-editor-style-css', plugin_dir_url(__FILE__) . 'build/index.css');
 		wp_register_script(ALBThemeType1BannerBlock::EDITOR_SCRIPT_NAME, plugin_dir_url(__FILE__) . 'build/index.js', array('wp-blocks', 'wp-element', 'wp-editor'));

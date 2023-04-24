@@ -1,9 +1,9 @@
 === ALB Block Theme Type 1 Banner ===
 Contributors: albedu
-Tags: 1.0.0, 1.0.1
+Tags: 1.0.0, 1.0.2
 Requires at least: 6.0
-Tested up to: 6.1
-Stable tag: 1.0.1
+Tested up to: 6.2
+Stable tag: 1.0.2
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -61,7 +61,7 @@ We post [video tutorials](https://www.youtube.com/channel/UCZTDSUa3ESwd1c6OyWU5H
 = 1.0.0 =
 * Initial commit
 
-= 1.0.1 =
-* Added missing translations
-* Added support for more child blocks 
+= 1.0.2 =
 * Bug fix
+* Tested up to WordPress Version 6.2
+* Added support for more child blocks 
